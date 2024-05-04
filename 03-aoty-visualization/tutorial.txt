@@ -1,0 +1,67 @@
+# Membuat Django project myproject
+django-admin startproject myproject
+
+# Membuat Django app myapp
+cd ./myproject
+python manage.py startapp myapp
+
+# Memulai server
+python manage.py runserver 80
+
+# Menginstall myapp ke myproject
+myproject > settings.py:
+
+    INSTALLED_APPS = [
+        'myapp',
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+    ]
+
+# Menambahkan route myapp ke myproject
+myproject > urls.py
+
+    from django.contrib import admin
+    from django.urls import include, path
+
+    urlpatterns = [
+        path('', include('myapp.urls')),
+        path('admin/', admin.site.urls),
+    ]
+
+# Membuat urls.py di myapp
+myapp > urls.py
+
+# Membuat route '' myapp
+myapp > urls.py
+
+    from django.urls import path
+    from . import views
+
+    urlpatterns = [
+        path("", views.index, name="index")
+    ]
+
+# Membuat views sederhana
+myapp > views.py
+
+    def index(request):
+        return render(request, "myapp/index.html")
+
+# Membuat folder myapp > templates > myapp
+
+# Membuat index.html
+myapp > templates > myapp > index.html
+
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <title>Hello</title>
+        </head>
+        <body>
+            <h1>Hello, World!</h1>
+        </body>
+    </html>
