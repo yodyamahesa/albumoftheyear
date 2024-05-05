@@ -8,6 +8,14 @@ python manage.py startapp myapp
 # Memulai server
 python manage.py runserver 80
 
+# Ganti Default Port
+> manage.py
+
+    # Override default port for `runserver` command
+    from django.core.management.commands.runserver import Command as runserver
+    runserver.default_port = "80"
+
+
 # Menginstall myapp ke myproject
 myproject > settings.py:
 

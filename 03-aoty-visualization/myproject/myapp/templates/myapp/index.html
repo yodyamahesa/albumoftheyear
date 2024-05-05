@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Hello</title>
-    </head>
-    <body>
-        <h1>Hello, World!</h1>
-    </body>
+<head>
+    <title>Hello</title>
+</head>
+<body>
+<h1>Hello, World!</h1>
+<ul>
+    {% for artist in artists %}
+    <li>{{ artist }}</li>
+    {% endfor %}
+</ul>
+</body>
 </html>
