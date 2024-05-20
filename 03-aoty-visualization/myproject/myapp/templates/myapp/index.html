@@ -60,8 +60,8 @@
                         style="height: 200px;margin: 2.5%;width: 150px;overflow-x: clip;"><img
                             style="width: 100%;height: 100%;border-radius: 10px;overflow: clip;margin-bottom: 10%;"
                             src="{{ thumbnail }}"><span class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);font-weight: bold;width: 100%;height: 100%;">{{ album }}</span><span
-                            style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);width: 100%;height: 100%;">{{ artis }}</span></div>
+                            style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);font-weight: bold;width: 100%;height: 100%;overflow: clip;">{{ album }}</span><span
+                            style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);width: 100%;height: 100%;overflow: clip;">{{ artis }}</span></div>
                     {% endfor %}
                 </div>
                 <div class="d-flex justify-content-center align-items-center align-content-center"
@@ -70,7 +70,7 @@
                     <div class="d-flex flex-column justify-content-center align-items-center align-content-center ratio-1x1"
                         style="height: 200px;margin: 2.5%;width: 150px;overflow-x: clip;"><img
                             style="width: 100%;height: 100%;border-radius: 10px;overflow: clip;margin-bottom: 10%;"
-                            src="assets/img/aoty_null.jpg"><span class="flex-nowrap"
+                            src="{{ thumbnail }}"><span class="flex-nowrap"
                             style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);font-weight: bold;width: 100%;height: 100%;">{{ album }}</span><span
                             style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);width: 100%;height: 100%;">{{ artis }}</span></div>
                     {% endfor %}
