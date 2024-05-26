@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>aoty_design</title>
-    <link rel="icon" type="image/svg+xml" sizes="512x512" href="assets/img/favicon.svg">
+    <link rel="icon" type="image/svg+xml" sizes="512x512" href="{% static 'myapp/assets/img/favicon.svg' %}">
     <link rel="stylesheet" href="{% static 'myapp/assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat&amp;display=swap">
     <link rel="stylesheet" href="{% static 'myapp/assets/css/aoty.css' %}">
@@ -17,57 +17,104 @@
             display: none;
         }
 
-        /* Hide scrollbar for IE, Edge, and Firefox */
         .no-scrollbar {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .shiny-button {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shiny-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+            animation: shiny 3s infinite;
+        }
+
+        @keyframes shiny {
+            0% {
+                transform: translate(-100%, -100%);
+            }
+            100% {
+                transform: translate(200%, 200%);
+            }
         }
     </style>
 
+    <script>
+        function setColor(cardId) {
+            var card = document.getElementById(cardId);
+            if (card.style.borderStyle === 'none') {
+                card.style.borderStyle = 'solid';
+                card.style.borderWidth = '10px';
+            } else {
+                card.style.borderStyle = 'none';
+            }
+        }
 
+        function getRecommendations() {
+            var links = [];
+            var cards = document.querySelectorAll('[id^="card_album"]');
+            cards.forEach(function(card) {
+                if (card.style.borderStyle === 'solid') {
+                    var link = card.querySelector('img').src;
+                    links.push(link);
+                }
+            });
+            console.log(links);
+            var albums = '*' + links.join('* , *') + '*';
+            alert(albums);
+        }
+    </script>
 </head>
 
-<body style="background: #000000; ">
-    <div class="d-flex" style="height: 100vh;padding: 1%;">
-        <div style="background: #1e1e1e;width: 25%;height: 100%;border-radius: 20px;padding: 2%;">
-            <div class="d-flex justify-content-center align-items-center align-content-center"
-                style="height: 15%;margin-bottom: 10%;"><img style="height: 100%;width: 100%;"
-                    src="{% static 'myapp/assets/img/aoty.svg' %}"></div>
-            <div style="height: 12%;width: 100%;margin-bottom: 10%;"><button class="btn btn-primary" type="button"
-                    style="width: 100%;height: 100%;border-style: none;background: #292929;border-radius: 20px;padding: 5%;"><img
-                        style="height: 100%;width: 100%;" src="{% static 'myapp/assets/img/eksplorasi.svg' %}"></button>
+<body style="background: #000000;">
+    <div class="d-flex" style="height: 100vh; padding: 1%;">
+        <div style="background: #1e1e1e; width: 25%; height: 100%; border-radius: 20px; padding: 2%;">
+            <div class="d-flex justify-content-center align-items-center align-content-center" style="height: 15%; margin-bottom: 10%;">
+                <img style="height: 100%; width: 100%;" src="{% static 'myapp/assets/img/aoty.svg' %}">
             </div>
-            <div style="height: 12%;width: 100%;margin-bottom: 10%;"><button class="btn btn-primary" type="button"
-                    style="width: 100%;height: 100%;border-style: none;background: #292929;border-radius: 20px;padding: 5%;"><img
-                        style="height: 100%;width: 100%;"
-                        src="{% static 'myapp/assets/img/koleksi-saya.svg' %}"></button></div>
-            <div style="height: 12%;width: 100%;margin-bottom: 10%;"><button class="btn btn-primary" type="button"
-                    style="width: 100%;height: 100%;border-style: none;background: #292929;border-radius: 20px;padding: 5%;"><img
-                        style="height: 100%;width: 100%;"
-                        src="{% static 'myapp/assets/img/rekomendasi.svg' %}"></button>
+            <div style="height: 12%; width: 100%; margin-bottom: 10%;">
+                <button class="btn btn-primary" type="button" style="width: 100%; height: 100%; border-style: none; background: #292929; border-radius: 20px; padding: 5%;">
+                    <img style="height: 100%; width: 100%;" src="{% static 'myapp/assets/img/eksplorasi.svg' %}">
+                </button>
             </div>
-            <div class="d-flex flex-column justify-content-center align-items-center align-content-center"
-                style="width: 100%;height: 35%;"><span
-                    style="color: #FFFFFF;font-family: Montserrat, sans-serif;font-weight: bold;font-size: 120%;">©
-                    Presented By</span><span
-                    style="color: #FFFFFF;font-family: Montserrat, sans-serif;font-size: 120%;">Mirah | Mananda |
-                    Yodya</span></div>
+            <div style="height: 12%; width: 100%; margin-bottom: 10%;">
+                <button class="btn btn-primary" type="button" style="width: 100%; height: 100%; border-style: none; background: #292929; border-radius: 20px; padding: 5%;">
+                    <img style="height: 100%; width: 100%;" src="{% static 'myapp/assets/img/koleksi-saya.svg' %}">
+                </button>
+            </div>
+            <div style="height: 12%; width: 100%; margin-bottom: 10%;">
+                <button class="btn btn-primary shiny-button" type="button" style="width: 100%; height: 100%; background: #292929; border-style: none; border-radius: 20px; padding: 5%;" onclick="getRecommendations()">
+                    <img style="height: 100%; width: 100%;" src="{% static 'myapp/assets/img/rekomendasi.svg' %}">
+                </button>
+            </div>
+            <div class="d-flex flex-column justify-content-center align-items-center align-content-center" style="width: 100%; height: 35%;">
+                <span style="color: #FFFFFF; font-family: Montserrat, sans-serif; font-weight: bold; font-size: 120%;">© Presented By</span>
+                <span style="color: #FFFFFF; font-family: Montserrat, sans-serif; font-size: 120%;">Mirah | Mananda | Yodya</span>
+            </div>
         </div>
-        <div style="height: 100%;padding: 2%;background: #1e1e1e;width: 75%;margin-left: 1%;border-radius: 20px;">
+        <div style="height: 100%; padding: 2%; background: #1e1e1e; width: 75%; margin-left: 1%; border-radius: 20px;">
             <div class="container" style="width: 100%; height: 100%;">
                 <div class="row justify-content-center align-items-center align-content-center" style="width: 100%; height: 10%;">
                     <div class="col-12 col-md-10 col-lg-8 d-flex align-items-center" style="background: #3e3e3e; border-radius: 15px; margin: 20px; padding: 5px;">
-                        <img class="d-flex justify-content-center" width="54" height="50" style="display: flex; flex-wrap: wrap; background: url(&quot;assets/img/kaca.svg&quot;); margin-left: 25px; margin-top: 5px; margin-bottom: 5px; margin-right: 25px;" src="{% static 'myapp/assets/img/kaca.svg' %}">
+                        <img class="d-flex justify-content-center" width="54" height="50" style="display: flex; flex-wrap: wrap; background: url({% static 'myapp/assets/img/kaca.svg' %}); margin-left: 25px; margin-top: 5px; margin-bottom: 5px; margin-right: 25px;" src="{% static 'myapp/assets/img/kaca.svg' %}">
                         <input class="flex-grow-1" type="text" name="Search Query" placeholder="Search Query" style="background: #3e3e3e; border-radius: 15px; height: 100%; font-family: Montserrat, sans-serif; color: var(--bs-body-bg); font-weight: bold; padding-left: 10px; padding-right: 10px; border-style: none;">
                     </div>
                 </div>
 
-
-
                 <div class="container mt-4 no-scrollbar" style="height: 80vh; overflow-y: scroll; background-color: #1e1e1e;">
-                    <div class="row px-3" style="display: flex; justify-content: center; align-items: center; height: 100%;" >
+                    <div class="row px-3" style="display: flex; justify-content: center; align-items: center; height: 100%;">
                         {% for album, artis, thumbnail in albums %}
-                        <div class="card mt-4 mb-4 mx-3 text-center" style="width: 13rem; height: 20rem; background-color: #3e3e3e; color: #FFFFFF; border-radius: 20px;">
+                        <div class="card mt-4 mb-4 mx-3 text-center" id="card_album{{ forloop.counter }}" onclick="setColor('card_album{{ forloop.counter }}')" style="width: 13rem; height: 20rem; background-color: #3e3e3e; color: #FFFFFF; border-radius: 20px; border-style: none;">
                             <div class="d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
                                 <img class="card-img-top mt-4" style=" width: 90%; border-radius: 10px;" src="{{ thumbnail }}" alt="Album Thumbnail">
                                 <div class="card-body d-flex flex-column justify-content-center align-items-center">
@@ -79,29 +126,10 @@
                         {% endfor %}
                     </div>
                 </div>
-                
-                
-                
-
-
-
-                {% comment %} <div class="d-flex justify-content-center align-items-center align-content-center"
-                    style="width: 100%;height: 100%;">
-                    {% for album, artis, thumbnail in album_atas %}
-                    <div class="d-flex flex-column justify-content-center align-items-center align-content-center ratio-1x1"
-                        style="height: 200px;margin: 2.5%;width: 150px;overflow-x: clip;"><img
-                            style="width: 100%;height: 100%;border-radius: 10px;overflow: clip;margin-bottom: 10%;"
-                            src="{{ thumbnail }}"><span class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);font-weight: bold;width: 100%;height: 100%;overflow: clip;">{{ album }}</span><span
-                            style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-secondary-bg);width: 100%;height: 100%;overflow: clip;">{{ artis }}</span></div>
-                    {% endfor %}
-                </div> {% endcomment %}
-
-                
             </div>
         </div>
     </div>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{% static 'myapp/assets/bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 
 </html>
