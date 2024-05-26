@@ -17,6 +17,11 @@ def index(request):
     })
     
     
+def rekomendasi(request):
+    return render(request, "myapp/sampah.html", {
+        "albums": album[0:100]
+    })
+    
 def funsampah(request):
     return render(request, "myapp/sampah.html", {
         "albums": album[0:100]
