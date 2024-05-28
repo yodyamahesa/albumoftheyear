@@ -13,14 +13,14 @@ for index, row in df_album.iterrows():
 
 def index(request):
     return render(request, "myapp/index.html", {
-        "albums": album[0:100]
+        "albums": album[0:300]
     })
     
     
-def rekomendasi(request):
-    return render(request, "myapp/sampah.html", {
-        "albums": album[0:100]
-    })
+# def rekomendasi(request):
+#     return render(request, "myapp/sampah.html", {
+#         "albums": album[0:100]
+#     })
     
 def funsampah(request):
     return render(request, "myapp/sampah.html", {
