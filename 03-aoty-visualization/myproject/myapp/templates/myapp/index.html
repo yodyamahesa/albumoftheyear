@@ -122,13 +122,11 @@
             <div class="container" style="width: 100%; height: 100%;">
                 <form method="POST" action="{% url 'index' %}">
                     {% csrf_token %}
-                    <div class="col-12 col-md-10 col-lg-8 d-flex align-items-center"
-                        style="background: #3e3e3e; border-radius: 15px; margin: 20px; padding: 5px;">
-                        <img class="d-flex justify-content-center" width="54" height="50"
-                            style="display: flex; flex-wrap: wrap; background: url({% static 'myapp/assets/img/kaca.svg' %}); margin-left: 25px; margin-top: 5px; margin-bottom: 5px; margin-right: 25px;"
-                            src="{% static 'myapp/assets/img/kaca.svg' %}">
-                        <input class="flex-grow-1" type="text" name="Search Query" placeholder="Search Query"
-                            style="background: #3e3e3e; border-radius: 15px; height: 100%; font-family: Montserrat, sans-serif; color: var(--bs-body-bg); font-weight: bold; padding-left: 10px; padding-right: 10px; border-style: none; **width: 100%;**">
+                    <div class="row justify-content-center align-items-center align-content-center" style="width: 100%; height: 10%;">
+                        <div class="col-12 col-md-10 col-lg-8 d-flex align-items-center" style="background: #3e3e3e; border-radius: 15px; margin: 20px; padding: 5px;">
+                            <img class="d-flex justify-content-center" width="54" height="50" style="display: flex; flex-wrap: wrap; background: url({% static 'myapp/assets/img/kaca.svg' %}); margin-left: 25px; margin-top: 5px; margin-bottom: 5px; margin-right: 25px;" src="{% static 'myapp/assets/img/kaca.svg' %}">
+                            <input class="flex-grow-1" type="text" name="Search Query" placeholder="Search Query" style="background: #3e3e3e; border-radius: 15px; height: 100%; font-family: Montserrat, sans-serif; color: var(--bs-body-bg); font-weight: bold; padding-left: 10px; padding-right: 10px; border-style: none;">
+                        </div>
                     </div>
                 </form>
 
