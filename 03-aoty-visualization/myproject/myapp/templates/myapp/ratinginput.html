@@ -58,64 +58,82 @@
                                     width="161" height="100"></button></div>
                     </div>
                 </div>
-                <div
-                    style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;margin-right: 2%;margin-left: 2%;">
-                    <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 12.5%;"><span class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 36px;color: var(--bs-secondary-bg);font-weight: bold;width: 100%;height: 100%;">Null
-                            Album</span></div>
-                    <div class="d-flex flex-row justify-content-center align-items-start align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;"><img
-                            style="width: 40px;height: 40px;border-radius: 10px;overflow: clip;"
-                            src="assets/img/aoty_null.jpg"><span
-                            style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);height: 100%;width: 50%;font-weight: bold;">Null
-                            Artist</span><span class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-body-bg);font-weight: bold;height: 100%;">.</span><span
-                            class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 50%;height: 100%;"><strong><span
-                                    style="color: rgb(233, 236, 239);">Null Date</span></strong></span></div>
-                    <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;"><span
-                            style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>Null
-                                Label</strong></span><span class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">Null
-                            Nama Label</span></div>
-                    <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;"><span
-                            style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>Null
-                                Genre</strong></span><span class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">Null
-                            Nama Genre</span></div>
-                    <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 20px;"><span
-                            style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>Null&nbsp;Produser</strong></span><span
-                            class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">Null
-                            Nama Produser</span></div>
-                    <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 20px;"><span
-                            style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>Null&nbsp;Penulis</strong></span><span
-                            class="flex-nowrap"
-                            style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">Null
-                            Nama Penulis</span></div>
-                    <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;"><span
-                            style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>Beri
-                                Rating</strong></span></div>
-                    <div class="d-flex flex-row justify-content-center align-items-center align-content-center ratio-1x1"
-                        style="width: 100%;overflow-x: clip;height: 100px;"><input
-                            class="justify-content-center align-items-center align-content-center" type="text"
-                            style="background: #FF6961;border-radius: 20px;height: 100%;width: 40%;font-size: 63px;color: var(--bs-body-bg);font-family: Montserrat, sans-serif;text-align: center;"
-                            value="33">
-                        <div class="d-xxl-flex justify-content-xxl-center align-items-xxl-center"
-                            style="width: 50%;background: #FF6961;height: 47px;border-radius: 20px;margin-left: 10%;">
+                <div class="container mt-4" style="background-color: #1e1e1e;">
+                    <div class="row px-3">
+                        {% for album, artis, thumbnail, label, genre, date, produser, penulis in albumdetails %}
+                        <div class="col-md-4 mb-4"
+                            style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;margin-right: 2%;margin-left: 2%;">
+                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;"><span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 36px;color: var(--bs-secondary-bg);font-weight: bold;width: 100%;height: 100%;">
+                                    {{ album }}
+                                </span></div>
+                            <div class="d-flex flex-row justify-content-center align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
+                                <img style="width: 40px;height: 40px;border-radius: 10px;overflow: clip;"
+                                    src="{{ thumbnail }}"><span
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);height: 100%;width: 50%;font-weight: bold;">
+                                    {{ artis }}
+                                </span><span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-body-bg);font-weight: bold;height: 100%;">.</span><span
+                                    class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 50%;height: 100%;"><strong><span
+                                            style="color: rgb(233, 236, 239);">{{ date }}</span></strong></span></div>
+                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
+                                <span
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
+                                    {{ label }}
+                                    </strong></span><span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
+                                    {{ label }} 
+                                </span></div>
+                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
+                                <span
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
+                                    {{ genre }}
+                                    </strong></span><span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
+                                    {{ genre }}
+                                </span></div>
+                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 20px;">
+                                <span
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
+                                    {{ produser }}</strong></span><span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
+                                    {{ produser }}
+                                </span></div>
+                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 20px;">
+                                <span
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
+                                    {{ penulis }} </strong></span><span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
+                                    {{ penulis }} 
+                                </span></div>
+                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;"><span
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
+                                    Beri Rating</strong></span></div>
+                            <div class="d-flex flex-row justify-content-center align-items-center align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 100px;"><input
+                                    class="justify-content-center align-items-center align-content-center" type="text"
+                                    style="background: #FF6961;border-radius: 20px;height: 100%;width: 40%;font-size: 63px;color: var(--bs-body-bg);font-family: Montserrat, sans-serif;text-align: center;"
+                                    value="33">
+                                <div class="d-xxl-flex justify-content-xxl-center align-items-xxl-center"
+                                    style="width: 50%;background: #FF6961;height: 47px;border-radius: 20px;margin-left: 10%;">
+                                </div>
+                            </div>
                         </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{% static 'myapp/assets/bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 
 </html>

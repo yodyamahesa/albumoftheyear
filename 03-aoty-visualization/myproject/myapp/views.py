@@ -44,6 +44,9 @@ def koleksisaya(request):
 def ratinginput(request):
     return render(request, 'myapp/ratinginput.html')
 
+# for ratinginput, row in df_album.iterrows():
+#     album.append((row['album'], row['artis'], row['thumbnail_album']))
+
 def rekomendasi(request):
     return render(request, "myapp/sampah.html", {
         "albums": album[0:100]
