@@ -15,13 +15,13 @@ def search_album(df, query):
     # Kembalikan daftar tuple (album, artis, thumbnail)
     results = []
     for _, row in top_results.iterrows():
-        results.append((row['album'], row['artis'], row['thumbnail_album']))
+        results.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album']))
 
     return results
 
 album = []
 for index, row in df_album.iterrows():
-    album.append((row['album'], row['artis'], row['thumbnail_album']))
+    album.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album']))
 
 def index(request):
     if request.method == 'POST':
@@ -42,7 +42,20 @@ def koleksisaya(request):
     return render(request, 'myapp/koleksisaya.html')
 
 def ratinginput(request):
-    return render(request, 'myapp/ratinginput.html')
+    if request.method == 'POST':
+        link_album = request.POST.get('link_album')
+
+        # Do something with the thumbnail (e.g., save it to the database or process it)
+        print(f"Received link album: {link_album}")  # Example: Just print it for now
+
+        clicked_df = df_album[df_album['link_album'] == link_album]
+        results = []
+        for _, row in clicked_df.iterrows():
+            results.append((row['album'], row['artis'], row['thumbnail_album'], row['label'], row['genre'], row['tanggal_rilis'], row['produser'], row['penulis']))
+
+        return render(request, 'myapp/ratinginput.html', {
+            "albumdetails": results
+        })
 
 # for ratinginput, row in df_album.iterrows():
 #     album.append((row['album'], row['artis'], row['thumbnail_album']))
@@ -56,8 +69,6 @@ def funsampah(request):
     return render(request, "myapp/sampah.html", {
         "albums": album[0:100]
     })
-
-
 
 
 #search_album(df_album, "taylor")
