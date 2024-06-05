@@ -81,6 +81,20 @@
                 document.querySelector('form').submit(); // Submit form
             }
         });
+
+        // Fungsi untuk menangani klik pada album
+        function redirectToRating() {
+            window.location.href = '{% url 'ratinginput' %}';
+        }
+
+        // Menambahkan event listener ke semua elemen 'card'
+        window.addEventListener('DOMContentLoaded', function() {
+            const albumCards = document.querySelectorAll('.card');
+            albumCards.forEach(card => {
+                card.addEventListener('click', redirectToRating);
+            });
+        });
+
     </script>
 </head>
 
@@ -99,7 +113,8 @@
             </div>
             <div style="height: 12%; width: 100%; margin-bottom: 10%;">
                 <button class="btn btn-primary" type="button"
-                    style="width: 100%; height: 100%; border-style: none; background: #292929; border-radius: 20px; padding: 5%;">
+                    style="width: 100%; height: 100%; border-style: none; background: #292929; border-radius: 20px; padding: 5%;"
+                    onclick="window.location.href='{% url 'koleksisaya' %}'">
                     <img style="height: 100%; width: 100%;" src="{% static 'myapp/assets/img/koleksi-saya.svg' %}">
                 </button>
             </div>

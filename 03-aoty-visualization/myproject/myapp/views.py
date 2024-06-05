@@ -38,6 +38,11 @@ def index(request):
         "albums": album[0:100]  # Ambil 100 album pertama
     })
     
+def koleksisaya(request):
+    return render(request, 'myapp/koleksisaya.html')
+
+def ratinginput(request):
+    return render(request, 'myapp/ratinginput.html')
 
 def rekomendasi(request):
     return render(request, "myapp/sampah.html", {
