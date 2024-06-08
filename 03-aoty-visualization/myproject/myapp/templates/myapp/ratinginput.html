@@ -10,11 +10,103 @@
     <link rel="stylesheet" href="{% static 'myapp/assets/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat&display=swap">
     <link rel="stylesheet" href="{% static 'myapp/assets/css/aoty.css' %}">
+
+    <style>
+        body{
+            font-family: Montserrat, sans-serif;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        
+        .rating-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        
+        .rating-box {
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 36px;
+            color: white;
+            width: 100px;
+            margin-right: 20px;
+        }
+        
+        input[type=range] {
+            -webkit-appearance: none;
+            height: 15px;
+            background: white;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+            border-radius: 10px;
+            flex-grow: 1;
+        }
+        
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #959595;
+            cursor: pointer;
+            border-radius: 50%;
+        }       
+        
+        .shiny-button {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shiny-button::after {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 50px;
+            height: 50px;
+            background-image: linear-gradient(100deg, rgba(255, 255, 255, 0) 10%, rgba(255, 255, 255, 1) 100%, rgba(255, 255, 255, 0) 0%);
+            animation-name: shiny;
+            animation-duration: 3s;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+        
+        @keyframes shiny {
+            0% {
+                transform: scale(0) rotate(25deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1) rotate(25deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(50) rotate(25deg);
+                opacity: 0;
+            }
+        }
+
+
+    </style>
+
 </head>
 
 <body style="background: #000000;">
     <div class="d-flex" style="height: 100vh;padding: 1%;">
-        <div style="background: #1e1e1e;width: 25%;height: 100%;border-radius: 20px;padding: 2%;">
+        <div style="background: #1e1e1e; width: 25%;height: 100%;border-radius: 20px;padding: 2%;">
             <div class="d-flex justify-content-center align-items-center align-content-center"
                 style="height: 15%;margin-bottom: 10%;"><img style="height: 100%;width: 100%;"
                     src="{% static 'myapp/assets/img/aoty.svg' %}"></div>
@@ -29,115 +121,147 @@
             <div style="height: 12%;width: 100%;margin-bottom: 10%;"><button class="btn btn-primary" type="button"
                     style="width: 100%;height: 100%;border-style: none;background: #535353;border-radius: 20px;padding: 5%;"><img
                         style="height: 100%;width: 100%;"
-                        src="{% static 'myapp/assets/img/rekomendasi.svg' %}"></button></div>
+                        src="{% static 'myapp/assets/img/rekomendasi.svg' %}"></button>
+                    </div>
             <div class="d-flex flex-column justify-content-center align-items-center align-content-center"
-                style="width: 100%;height: 35%;"><span
-                    style="color: #FFFFFF;font-family: Montserrat, sans-serif;font-weight: bold;font-size: 120%;">©
-                    Presented By</span><span
-                    style="color: #FFFFFF;font-family: Montserrat, sans-serif;font-size: 120%;">Mirah | Mananda |
-                    Yodya</span></div>
+                style="width: 100%;height: 35%;">
+                <span style="color: #FFFFFF;font-family: Montserrat, sans-serif;font-weight: bold;font-size: 120%;">© Presented By</span>
+                <span style="color: #FFFFFF;font-family: Montserrat, sans-serif;font-size: 120%;">Mirah | Mananda |Yodya</span>
+            </div>
         </div>
-        <div style="height: 100%;padding: 2%;background: #1e1e1e;width: 75%;margin-left: 1%;border-radius: 20px;">
+
+        <div style="height: 100%;padding: 2%;background: #1e1e1e; width: 75%; margin-left: 1%;border-radius: 20px;">
             <div class="container d-flex" style="width: 100%;">
                 <div class="justify-content-center align-items-center align-content-center"
-                    style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;"><button
-                        class="btn btn-primary" type="button"
-                        style="width: 100%;border-style: none;background: #3E3E3E;border-radius: 20px;padding: 5%;height: 100px;"
-                        onclick="window.location.href='{% url 'index' %}'"><img
-                            style="height: 100%;width: 100%;" 
-                            src="{% static 'myapp/assets/img/Kembali.svg' %}"></button>
+                    style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;">
                     {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis in albumdetails %}
+
+                    <button
+                        class="btn btn-primary mt-4" type="button"
+                        style="border-style: none; background: #1e1e1e; height: 5vh;"
+                        onclick="window.location.href='{% url 'index' %}'"><img
+                            style="height: 100%; width: 100%;" 
+                            src="{% static 'myapp/assets/img/Kembali.svg' %}">
+                    </button>
+
                     <div class="d-flex flex-column justify-content-center align-items-center align-content-center"><img
                             class="align-items-center align-content-center"
-                            style="height: 400px;width: 400px;border-radius: 20px;margin-top: 10%;margin-bottom: 7%;"
+                            style="height: 400px;width: 400px;border-radius: 20px;margin-top: 2%;margin-bottom: 7%;"
                             {% if thumbnail|length < 1 %}
                             src="{% static 'myapp/assets/img/aoty_null.jpg' %}">
                             {% else %}
                             src="{{ thumbnail }}">
                             {% endif %}
                         <div class="d-flex"><button class="btn btn-primary" type="button"
-                                style="width: 100%;border-style: none;background: #292929;border-radius: 20px;margin: 2%;height: 100%;"><img
+                                style="width: 100%;border-style: none;background: #292929;border-radius: 20px;margin:2%; height: 100%;"><img
                                     style="height: 100%;width: 100%;" src="{% static 'myapp/assets/img/youtube.svg' %}"
                                     width="180" height="24"></button><button class="btn btn-primary" type="button"
                                 style="width: 100%;border-style: none;background: #292929;border-radius: 20px;margin: 2%;height: 100%;"><img
                                     style="height: 100%;width: 100%;" src="{% static 'myapp/assets/img/spotify.svg' %}"
                                     width="161" height="100"></button></div>
                     {% endfor %}
+
+                    <button
+                        class="btn btn-primary mt-2 shiny-button" type="button"
+                        style="font-size: 24px; font-weight: bold; width: 380px; border-style: none; background: #292929; border-radius: 20px;padding: 5%;height: 100px;"
+                        onclick="window.location.href='{% url 'index' %}'">
+                        Beri Rating 
+                    </button>
+
                     </div>
                 </div>
-                <div class="container mt-4" style="background-color: #1e1e1e; ">
+
+
+                <div class="container mt-4 no-scrollbar" style="height: 80vh; overflow-y: scroll; background-color: #1e1e1e; ">
                     <div class="row px-3">
                         {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis in albumdetails %}
                         <div class="col-md-4 mb-4"
                             style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;margin-right: 2%;margin-left: 2%;">
                             <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 12.5%;"><span class="flex-nowrap"
-                                    style="font-family: Montserrat, sans-serif;font-size: 36px;color: var(--bs-secondary-bg);font-weight: bold;width: 100%;height: 100%;">
+                                style="width: 100%;overflow-x: clip;height: 12.5%;">
+                                <span class="flex-nowrap mb-4"
+                                    style="font-family: Montserrat, sans-serif;font-size: 36px;color: var(--bs-secondary-bg);font-weight: bold; width: 100%;height: 100%;">
                                     {{ album }}
                                 </span></div>
-                            <div class="d-flex flex-row justify-content-center align-items-start align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
-                                <img style="width: 40px;height: 40px;border-radius: 10px;overflow: clip;"
+                            <div class="d-flex flex-row justify-content-center align-items-center align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip; height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
+                                <img style="height: 100px; border-radius: 10px;overflow: clip;"
                                 {% if thumbnail_artis|length < 1 %}
                                 src="{% static 'myapp/assets/img/aoty_null.jpg' %}">
                                 {% else %}
                                 src="{{ thumbnail_artis }}">
                                 {% endif %}
                                 <span
-                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);height: 100%;width: 50%;font-weight: bold;">
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);height: 100%;width: 50%;font-weight: bold; padding: 20px;">
                                     {{ artis }}
-                                </span><span class="flex-nowrap"
-                                    style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-body-bg);font-weight: bold;height: 100%;">.</span><span
-                                    class="flex-nowrap"
-                                    style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 50%;height: 100%;"><strong><span
-                                            style="color: rgb(233, 236, 239);">{{ date }}</span></strong></span></div>
-                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
+                                </span>
+
+                                <span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 125%;color: var(--bs-body-bg);font-weight: bold;height: 100%;">
+                                </span>
                                 <span
-                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
-                                    Label 
-                                    </strong></span><span class="flex-nowrap"
+                                    class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 50%;height: 100%;">
+                                    <strong>
+                                        <span
+                                            style="color: rgb(233, 236, 239);">{{ date }}
+                                        </span>
+                                        </strong>
+                                    </span>
+                                </div>
+                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 10px;padding-bottom: 20px;">
+                                <span
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
+                                    <strong>Label</strong>
+                                </span>
+                                
+                                <span class="flex-nowrap"
                                     style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
                                     {{ label }} 
-                                </span></div>
+                                </span>
+                            </div>
+
                             <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 10px;padding-bottom: 20px;">
                                 <span
-                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
-                                    Genre 
-                                    </strong></span><span class="flex-nowrap"
+                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
+                                    <strong>Genre</strong>
+                                </span>
+                                <span class="flex-nowrap"
                                     style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
                                     {{ genre }}
-                                </span></div>
+                                </span>
+                            </div>
                             <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 20px;">
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 10px;">
                                 <span
                                     style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
-                                    Produser</strong></span><span class="flex-nowrap"
+                                    Produser</strong>
+                                </span>
+                                <span class="flex-nowrap"
                                     style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
                                     {{ produser }}
-                                </span></div>
+                                </span>
+                            </div>
                             <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 20px;">
+                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-bottom: 20px;padding-top: 10px;">
                                 <span
                                     style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
-                                    Penulis </strong></span><span class="flex-nowrap"
+                                    Penulis </strong>
+                                </span>
+                                <span class="flex-nowrap"
                                     style="font-family: Montserrat, sans-serif;font-size: 20px;color: var(--bs-secondary-bg);width: 100%;height: 100%;">
                                     {{ penulis }} 
-                                </span></div>
-                            <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;"><span
-                                    style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);width: 100%;height: 100%;"><strong>
-                                    Beri Rating</strong></span></div>
-                            <div class="d-flex flex-row justify-content-center align-items-center align-content-center ratio-1x1"
-                                style="width: 100%;overflow-x: clip;height: 100px;"><input
-                                    class="justify-content-center align-items-center align-content-center" type="text"
-                                    style="background: #FF6961;border-radius: 20px;height: 100%;width: 40%;font-size: 63px;color: var(--bs-body-bg);font-family: Montserrat, sans-serif;text-align: center;"
-                                    value="33">
-                                <div class="d-xxl-flex justify-content-xxl-center align-items-xxl-center"
-                                    style="width: 50%;background: #FF6961;height: 47px;border-radius: 20px;margin-left: 10%;">
-                                </div>
+                                </span>
                             </div>
+        
+
+                                <div class="rating-container">
+                                    <div id="ratingBox" class="rating-box" style="background-color: #888100;">50</div>
+                                    <input type="range" id="ratingSlider" min="0" max="100" value="50" oninput="updateRating(this.value)">
+                                </div>
+                                
                         </div>
                         {% endfor %}
                     </div>
@@ -145,6 +269,26 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function intToHex(value) {
+            var hex = value.toString(16);
+            return hex.length == 1 ? "0" + hex : hex;
+        }
+
+        function makeColor(value) {
+            value = Math.min(Math.max(0, value), 100);
+            var redValue = 255 - Math.round(value * 2.55);
+            var greenValue = Math.round(value * 2.55);
+            return "#" + intToHex(redValue) + intToHex(greenValue) + "00";
+        }
+
+        function updateRating(value) {
+            var ratingBox = document.getElementById('ratingBox');
+            ratingBox.style.backgroundColor = makeColor(value);
+            ratingBox.textContent = value;
+        }
+    </script>
     <script src="{% static 'myapp/assets/bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
 
