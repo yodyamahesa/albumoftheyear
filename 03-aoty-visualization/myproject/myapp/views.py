@@ -4,13 +4,17 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from fuzzywuzzy import fuzz
 
+# Dataframe dataset album
 df_album = pd.read_csv('myapp/dataset/albums.csv', sep=';')
+
+# Menyimpan data rating album user
+user_ratings = list()
 
 def search_album(df, query):
 
     df['artis album'] = df['artis'] + ' - ' + df['album']
     df['Score'] = df['artis album'].apply(lambda x: fuzz.token_sort_ratio(x, query))
-    top_results = df.sort_values(by='Score', ascending=False).head(10)  # Ambil 3 hasil teratas
+    top_results = df.sort_values(by='Score', ascending=False).head(20)  # Ambil 3 hasil teratas
 
     # Kembalikan daftar tuple (album, artis, thumbnail)
     results = []
@@ -51,7 +55,7 @@ def ratinginput(request):
         clicked_df = df_album[df_album['link_album'] == link_album]
         results = []
         for _, row in clicked_df.iterrows():
-            results.append((row['album'], row['artis'], row['thumbnail_album'], row['label'], row['genre'], row['tanggal_rilis'], row['produser'], row['penulis']))
+            results.append((row['album'], row['artis'], row['thumbnail_album'], row['label'], row['genre'], row['tanggal_rilis'], row['produser'], row['penulis'], row['thumbnail_artis']))
 
         return render(request, 'myapp/ratinginput.html', {
             "albumdetails": results

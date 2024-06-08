@@ -45,7 +45,7 @@
                         style="width: 100%;border-style: none;background: #3E3E3E;border-radius: 20px;padding: 5%;height: 100px;"><img
                             style="height: 100%;width: 100%;"
                             src="{% static 'myapp/assets/img/Kembali.svg' %}"></button>
-                    {% for album, artis, thumbnail, label, genre, date, produser, penulis in albumdetails %}
+                    {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis in albumdetails %}
                     <div class="d-flex flex-column justify-content-center align-items-center align-content-center"><img
                             class="align-items-center align-content-center"
                             style="height: 400px;width: 400px;border-radius: 20px;margin-top: 10%;margin-bottom: 7%;"
@@ -66,7 +66,7 @@
                 </div>
                 <div class="container mt-4" style="background-color: #1e1e1e;">
                     <div class="row px-3">
-                        {% for album, artis, thumbnail, label, genre, date, produser, penulis in albumdetails %}
+                        {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis in albumdetails %}
                         <div class="col-md-4 mb-4"
                             style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;margin-right: 2%;margin-left: 2%;">
                             <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
@@ -77,10 +77,10 @@
                             <div class="d-flex flex-row justify-content-center align-items-start align-content-center ratio-1x1"
                                 style="width: 100%;overflow-x: clip;height: 12.5%;padding-top: 20px;padding-bottom: 20px;">
                                 <img style="width: 40px;height: 40px;border-radius: 10px;overflow: clip;"
-                                {% if thumbnail|length < 1 %}
+                                {% if thumbnail_artis|length < 1 %}
                                 src="{% static 'myapp/assets/img/aoty_null.jpg' %}">
                                 {% else %}
-                                src="{{ thumbnail }}">
+                                src="{{ thumbnail_artis }}">
                                 {% endif %}
                                 <span
                                     style="font-family: Montserrat, sans-serif;font-size: 28px;color: var(--bs-secondary-bg);height: 100%;width: 50%;font-weight: bold;">
