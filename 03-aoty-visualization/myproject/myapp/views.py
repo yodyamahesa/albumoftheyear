@@ -61,8 +61,35 @@ def ratinginput(request):
             "albumdetails": results
         })
 
-# for ratinginput, row in df_album.iterrows():
-#     album.append((row['album'], row['artis'], row['thumbnail_album']))
+def detail_album(request, album_id):
+    # Baca data dari file CSV
+    with open('albums.csv', 'r', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile, delimiter=';|')  # Gunakan ';|' sebagai pemisah
+        albumdetails = []
+        for row in reader:
+            # Ubah pemisah di kolom Label, Genre, Produser, Penulis
+            row[7] = row[7].replace(';|', ',')  # Kolom Label
+            row[8] = row[8].replace(';|', ',')  # Kolom Genre
+            row[9] = row[9].replace(';|', ',')  # Kolom Produser
+            row[10] = row[10].replace(';|', ',')  # Kolom Penulis
+            albumdetails.append(row)
+
+    # Temukan album yang sesuai dengan album_id
+    album = None
+    for row in albumdetails:
+        if row[2] == album_id:  # Asumsi kolom album_id adalah kolom ke-3 (index 2)
+            album = row
+            break
+
+    if album:
+        context = {
+            'albumdetails': [album],  # Kirim hanya data album yang sesuai
+            # ... (variabel lain yang dibutuhkan template Anda)
+        }
+        return render(request, 'ratinginput.html', context)
+    else:
+        # Tampilkan pesan error jika album tidak ditemukan
+        return render(request, 'error.html', {'message': 'Album tidak ditemukan'})
 
 def rekomendasi(request):
     return render(request, "myapp/sampah.html", {
