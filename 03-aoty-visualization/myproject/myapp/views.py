@@ -6,6 +6,7 @@ from fuzzywuzzy import fuzz
 from sklearn.metrics.pairwise import cosine_similarity
 
 # Dataframe dataset album
+df_rating = pd.read_csv('myapp/dataset/ratings.csv', sep=';')
 df_album = pd.read_csv('myapp/dataset/albums.csv', sep=';')
 df_album = df_album.apply(lambda x: x.str.replace(';|', ', '))
 df_album['input'] = -1
@@ -24,6 +25,43 @@ def search_album(df, query):
         results.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album'], row['input']))
 
     return results
+
+def collaborative_filtering(df_ratings, df_albums, user_ratings):
+    # Create interaction matrix
+    interaction_matrix = df_ratings.pivot_table(index='user', columns='link_album', values='rating_album')
+    df_filled = interaction_matrix.fillna(0)
+
+    # Standardize ratings
+    def standardize(row):
+        return (row - row.mean()) / (row.max() - row.min())
+
+    ratings_std = df_filled.apply(standardize).fillna(0)
+
+    # Calculate item similarity
+    item_similarity = cosine_similarity(ratings_std.T)
+    item_similarity_df = pd.DataFrame(item_similarity, index=ratings_std.columns, columns=ratings_std.columns)
+
+    # Function to get similar albums
+    def get_similar_more_albums(user_ratings):
+        total_scores = pd.Series(dtype=float)
+        for album, rating in user_ratings:
+            similar_scores = item_similarity_df[album] * (rating - 50)
+            total_scores = total_scores.add(similar_scores, fill_value=0)
+        total_scores = total_scores.sort_values(ascending=False)
+        return total_scores
+
+    # Get recommendations
+    hasil_data = get_similar_more_albums(user_ratings)
+    hasil = pd.DataFrame(hasil_data, columns=['score'])
+    hasil['link_album'] = hasil_data.index
+    hasil = hasil.reset_index(drop=True)
+
+    # Merge with album details
+    df_hasil = df_albums.join(hasil.set_index("link_album"), on='link_album')
+    sorted = df_hasil.sort_values(by='score', ascending=False)
+    top_10 =sorted.head(10)
+
+    return top_10
 
 
 def index(request):
@@ -59,9 +97,15 @@ def ratinginput(request):
         print(f"Received link album: {link_album}")  # Example: Just print it for now
 
         if rating is not None:
-            df_album.loc[df_album['link_album'] == f'{link_album}', 'input'] = rating
+            df_album.loc[df_album['link_album'] == f'{link_album}', 'input'] = int(rating)
             filtered_rows = df_album[df_album['input'] != -1]
-            print(filtered_rows)
+            user_ratings_cf = list(zip(filtered_rows['link_album'].values, filtered_rows['input'].values))
+            filtered_rows = df_album[df_album['input'] >= 50]
+            user_ratings_cb = filtered_rows['link_album'].to_list()
+            print('collaborative filtering')
+            print(user_ratings_cf)
+            print('content based filtering')
+            print(user_ratings_cb)
 
         clicked_df = df_album[df_album['link_album'] == link_album]
         results = []
@@ -116,44 +160,6 @@ def funsampah(request):
     return render(request, "myapp/sampah.html", {
         "albums": album[0:100]
     })
-
-
-def collaborative_filtering(df_rating, df_album, user_ratings):
-    # Create interaction matrix
-    interaction_matrix = df_rating.pivot_table(index='user', columns='link_album', values='rating_album')
-    df_filled = interaction_matrix.fillna(0)
-
-    # Standardize ratings
-    def standardize(row):
-        return (row - row.mean()) / (row.max() - row.min())
-
-    ratings_std = df_filled.apply(standardize).fillna(0)
-
-    # Calculate item similarity
-    item_similarity = cosine_similarity(ratings_std.T)
-    item_similarity_df = pd.DataFrame(item_similarity, index=ratings_std.columns, columns=ratings_std.columns)
-
-    # Function to get similar albums
-    def get_similar_more_albums(user_ratings):
-        total_scores = pd.Series(dtype=float)
-        for album, rating in user_ratings:
-            similar_scores = item_similarity_df[album] * (rating - 50)
-            total_scores = total_scores.add(similar_scores, fill_value=0)
-        total_scores = total_scores.sort_values(ascending=False)
-        return total_scores
-
-    # Get recommendations
-    hasil_data = get_similar_more_albums(user_ratings)
-    hasil = pd.DataFrame(hasil_data, columns=['score'])
-    hasil['link_album'] = hasil_data.index
-    hasil = hasil.reset_index(drop=True)
-
-    # Merge with album details
-    df_hasil = df_album.join(hasil.set_index("link_album"), on='link_album')
-    sorted = df_hasil.sort_values(by='score', ascending=False)
-    top_10 = sorted.head(10)
-
-    return top_10
 
 
 def getLinkAndRating(request):

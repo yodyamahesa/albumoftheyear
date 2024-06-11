@@ -153,12 +153,12 @@
                             src="{{ thumbnail }}">
                             {% endif %}
                         <div class="d-flex"><button class="btn btn-primary" type="button"
-                                style="width: 100%;border-style: none;background: #292929;border-radius: 20px;margin:2%; height: 100%;"><img
+                                style="width: 100%;border-style: none;background: #292929;border-radius: 20px;margin:2%; height: 100%;"><a href="https://music.youtube.com/search?q={{ artis }} {{ album }}" target="_blank"><img
                                     style="height: 100%;width: 100%;" src="{% static 'myapp/assets/img/youtube.svg' %}"
-                                    width="180" height="24"></button><button class="btn btn-primary" type="button"
-                                style="width: 100%;border-style: none;background: #292929;border-radius: 20px;margin: 2%;height: 100%;"><img
+                                    width="180" height="24"></a></button><button class="btn btn-primary" type="button"
+                                style="width: 100%;border-style: none;background: #292929;border-radius: 20px;margin: 2%;height: 100%;"><a href="https://open.spotify.com/search/{{ artis }} {{ album }}" target="_blank"><img
                                     style="height: 100%;width: 100%;" src="{% static 'myapp/assets/img/spotify.svg' %}"
-                                    width="161" height="100"></button></div>
+                                    width="161" height="100"></a></button></div>
                     {% endfor %}
 
                     <button
