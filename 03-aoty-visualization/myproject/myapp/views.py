@@ -3,43 +3,47 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 import numpy as np
 from fuzzywuzzy import fuzz
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 # Dataframe dataset album
 df_album = pd.read_csv('myapp/dataset/albums.csv', sep=';')
+df_album['input'] = -1
 
 # Menyimpan data rating album user
 user_ratings = list()
 
-def search_album(df, query):
 
+def search_album(df, query):
     df['artis album'] = df['artis'] + ' - ' + df['album']
     df['Score'] = df['artis album'].apply(lambda x: fuzz.token_sort_ratio(x, query))
-    top_results = df.sort_values(by='Score', ascending=False).head(20)  # Ambil 3 hasil teratas
+    top_results = df.sort_values(by='Score', ascending=False).head(20)  # Get top 20 results
 
-    # Kembalikan daftar tuple (album, artis, thumbnail)
+    # Return a list of tuples (album, artis, thumbnail, link_album, input)
     results = []
     for _, row in top_results.iterrows():
-        results.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album']))
+        results.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album'], row['input']))
 
     return results
 
-album = []
+# Prepare initial album list
+album_list = []
 for index, row in df_album.iterrows():
-    album.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album']))
+    album_list.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album'], row['input']))
 
 def index(request):
     if request.method == 'POST':
         query = request.POST.get('Search Query')
-        if query != "" :
-            # Lakukan pencarian album berdasarkan query
+        if query:
+            # Perform album search based on query
             search_results = search_album(df_album.copy(), query)
             return render(request, "myapp/index.html", {
-                "albums": search_results  #  Pass the list of tuples directly
+                "albums": search_results  # Pass the list of tuples directly
             })
 
-    # Jika bukan POST atau query kosong, tampilkan hasil default
+    # If not POST or query is empty, display default results
     return render(request, "myapp/index.html", {
-        "albums": album[0:100]  # Ambil 100 album pertama
+        "albums": album_list[:100]  # Get the first 100 albums
     })
     
 def koleksisaya(request):
@@ -102,4 +106,61 @@ def funsampah(request):
     })
 
 
-#search_album(df_album, "taylor")
+
+
+
+
+def collaborative_filtering(df_rating, df_album, user_ratings):
+    # Create interaction matrix
+    interaction_matrix = df_rating.pivot_table(index='user', columns='link_album', values='rating_album')
+    df_filled = interaction_matrix.fillna(0)
+
+    # Standardize ratings
+    def standardize(row):
+        return (row - row.mean()) / (row.max() - row.min())
+
+    ratings_std = df_filled.apply(standardize).fillna(0)
+
+    # Calculate item similarity
+    item_similarity = cosine_similarity(ratings_std.T)
+    item_similarity_df = pd.DataFrame(item_similarity, index=ratings_std.columns, columns=ratings_std.columns)
+
+    # Function to get similar albums
+    def get_similar_more_albums(user_ratings):
+        total_scores = pd.Series(dtype=float)
+        for album, rating in user_ratings:
+            similar_scores = item_similarity_df[album] * (rating - 50)
+            total_scores = total_scores.add(similar_scores, fill_value=0)
+        total_scores = total_scores.sort_values(ascending=False)
+        return total_scores
+
+    # Get recommendations
+    hasil_data = get_similar_more_albums(user_ratings)
+    hasil = pd.DataFrame(hasil_data, columns=['score'])
+    hasil['link_album'] = hasil_data.index
+    hasil = hasil.reset_index(drop=True)
+
+    # Merge with album details
+    df_hasil = df_album.join(hasil.set_index("link_album"), on='link_album')
+    sorted = df_hasil.sort_values(by='score', ascending=False)
+    top_10 =sorted.head(10)
+
+    return top_10
+
+
+# def getLinkAndRating(request):
+#     if request.method == 'POST':
+#         link_album = request.POST.get('link_album')
+#         rating = request.POST.get('rating')
+
+#         # Update the DataFrame with the new rating
+#         df_album.loc[df_album['link_album'] == link_album, 'input'] = int(rating)
+#         filtered_rows = df_album[df_album['input'] != -1]
+
+#         results = []
+#         for _, row in filtered_rows.iterrows():
+#             results.append((row['album'], row['artis'], row['thumbnail_album'], row['label'], row['genre'], row['tanggal_rilis'], row['produser'], row['penulis'], row['thumbnail_artis']))
+
+#         return render(request, 'myapp/ratinginput.html', {
+#             "albumdetails": results
+#         })

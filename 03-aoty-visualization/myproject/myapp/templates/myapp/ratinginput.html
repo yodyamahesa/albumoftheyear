@@ -163,13 +163,14 @@
 
                     <button
                         class="btn btn-primary mt-2 shiny-button" type="button"
-                        style="font-size: 24px; font-weight: bold; width: 380px; border-style: none; background: #292929; border-radius: 20px;padding: 5%;height: 100px;"
+                        style="font-size: 3vh; font-weight: bold; width: 380px; border-style: none; background: #292929; border-radius: 20px;padding: 5%;height: 100px;"
                         onclick="window.location.href='{% url 'index' %}'">
                         Beri Rating 
                     </button>
 
                     </div>
                 </div>
+
 
 
                 <div class="container mt-4 no-scrollbar" style="height: 80vh; overflow-y: scroll; background-color: #1e1e1e; ">
@@ -255,8 +256,8 @@
                                     {{ penulis }} 
                                 </span>
                             </div>
-        
-
+                            
+                            {% comment %} isi action di sini {% endcomment %}
                                 <div class="rating-container">
                                     <div id="ratingBox" class="rating-box" style="background-color: #888100;">50</div>
                                     <input type="range" id="ratingSlider" min="0" max="100" value="50" oninput="updateRating(this.value)">
@@ -267,6 +268,10 @@
                     </div>
                 </div>
             </div>
+
+
+
+            
         </div>
     </div>
 
