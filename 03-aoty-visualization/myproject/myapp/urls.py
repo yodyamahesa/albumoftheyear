@@ -6,5 +6,5 @@ urlpatterns = [
     path('koleksisaya', views.koleksisaya, name='koleksisaya'),
     path('ratinginput', views.ratinginput, name='ratinginput'),
     path('hasil', views.rekomendasi, name="hasil")
-    # path('get-link-and-rating/', getLinkAndRating, name='getLinkAndRating')
+    # path('get-link-and-rating/', views.getLinkAndRating, name='getLinkAndRating')
 ]

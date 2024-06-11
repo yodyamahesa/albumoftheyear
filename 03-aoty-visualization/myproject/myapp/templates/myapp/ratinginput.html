@@ -134,7 +134,7 @@
             <div class="container d-flex" style="width: 100%;">
                 <div class="justify-content-center align-items-center align-content-center"
                     style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;">
-                    {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis in albumdetails %}
+                    {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis, link_album in albumdetails %}
 
                     <button
                         class="btn btn-primary mt-4" type="button"
@@ -163,6 +163,7 @@
 
                     <button
                         class="btn btn-primary mt-2 shiny-button" type="button"
+                        id="postrating"
                         style="font-size: 3vh; font-weight: bold; width: 380px; border-style: none; background: #292929; border-radius: 20px;padding: 5%;height: 100px;"
                         onclick="window.location.href='{% url 'index' %}'">
                         Beri Rating 
@@ -175,7 +176,7 @@
 
                 <div class="container mt-4 no-scrollbar" style="height: 80vh; overflow-y: scroll; background-color: #1e1e1e; ">
                     <div class="row px-3">
-                        {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis in albumdetails %}
+                        {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis, link_album in albumdetails %}
                         <div class="col-md-4 mb-4"
                             style="width: 100%;height: 100%;background: #1e1e1e;border-radius: 20px;margin-right: 2%;margin-left: 2%;">
                             <div class="d-flex flex-column justify-content-start align-items-start align-content-center ratio-1x1"
@@ -256,12 +257,17 @@
                                     {{ penulis }} 
                                 </span>
                             </div>
-                            
-                            {% comment %} isi action di sini {% endcomment %}
+
+                            <form method="POST" action="{% url 'ratinginput' %}">
+                                {% csrf_token %}
                                 <div class="rating-container">
                                     <div id="ratingBox" class="rating-box" style="background-color: #888100;">50</div>
-                                    <input type="range" id="ratingSlider" min="0" max="100" value="50" oninput="updateRating(this.value)">
+                                    {% for album, artis, thumbnail, label, genre, date, produser, penulis, thumbnail_artis, link_album in albumdetails %}
+                                        <input type="hidden" id="linkAlbum" name="link_album" value="{{ link_album }}">
+                                    {% endfor %}
+                                    <input type="range" name="nilairating" id="ratingSlider" min="0" max="100" value="50" oninput="updateRating(this.value)">
                                 </div>
+                            </form>
                                 
                         </div>
                         {% endfor %}
@@ -290,9 +296,21 @@
 
         function updateRating(value) {
             var ratingBox = document.getElementById('ratingBox');
+            var linkAlbum = document.getElementById('linkAlbum').value;
             ratingBox.style.backgroundColor = makeColor(value);
             ratingBox.textContent = value;
+            // Kirim nilai ke server menggunakan AJAX
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "{% url 'ratinginput' %}", true);
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                // Lakukan sesuatu jika perlu setelah data berhasil dikirim
+                console.log('Rating berhasil dikirim!');
+            };
+            xhr.send("nilairating=" + value + "&link_album=" + linkAlbum);
         }
+
     </script>
     <script src="{% static 'myapp/assets/bootstrap/js/bootstrap.min.js' %}"></script>
 </body>
