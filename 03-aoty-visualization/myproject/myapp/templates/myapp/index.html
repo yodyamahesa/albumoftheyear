@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{% static 'myapp/assets/css/Articles-Badges-images.css' %}">
     <link rel="stylesheet" href="{% static 'myapp/assets/css/Articles-Badges-images.css' %}">
 
-
+    
     <style>
         body {
             font-family: Montserrat, sans-serif;
@@ -97,12 +97,18 @@
 </head>
 
 <body style="background: #000000;">
+
+<!-- Side -->
 <div class="d-flex" style="height: 100vh; padding: 1%;">
     <div style="background: #1e1e1e; width: 25%; height: 100%; border-radius: 20px; padding: 2%;">
+
+        <!-- Logo Album of The Year -->
         <div class="d-flex justify-content-center align-items-center align-content-center"
              style="height: 15%; margin-bottom: 10%;">
             <img style="height: 100%; width: 100%;" src="{% static 'myapp/assets/img/aoty.svg' %}">
         </div>
+        
+        <!-- Button Eksplorasi -->
         <div style="height: 12%; width: 100%; margin-bottom: 10%;">
             <button class="btn btn-primary" type="button"
                     style="width: 100%; height: 100%; border-style: none; background: #292929; border-radius: 20px; padding: 5%;">
@@ -111,6 +117,8 @@
                 </a>
             </button>
         </div>
+
+        <!-- Button Koleksi -->
         <div style="height: 12%; width: 100%; margin-bottom: 10%;">
             <button class="btn btn-primary" type="button"
                     style="width: 100%; height: 100%; border-style: none; background: #292929; border-radius: 20px; padding: 5%;">
@@ -119,6 +127,8 @@
                 </a>
             </button>
         </div>
+
+        <!-- Button Rekomendasi -->
         <div style="height: 12%; width: 100%; margin-bottom: 10%;">
             <button class="btn btn-primary shiny-button" type="button"
                     style="width: 100%; height: 100%; background: #292929; border-style: none; border-radius: 20px; padding: 5%;">
@@ -127,16 +137,24 @@
                 </a>
             </button>
         </div>
+
+        <!-- Foot -->
         <div class="d-flex flex-column justify-content-center align-items-center align-content-center"
              style="width: 100%; height: 35%;">
-                <span style="color: #FFFFFF; font-family: Montserrat, sans-serif; font-weight: bold; font-size: 120%;">©
-                    Presented By</span>
-            <span style="color: #FFFFFF; font-family: Montserrat, sans-serif; font-size: 120%;">Mirah | Mananda |
-                    Yodya</span>
+                <span style="color: #FFFFFF; font-family: Montserrat, sans-serif; font-weight: bold; font-size: 120%;">
+                    © Presented By
+                </span>
+                <span style="color: #FFFFFF; font-family: Montserrat, sans-serif; font-size: 120%;">
+                    Mirah | Mananda | Yodya
+                </span>
         </div>
     </div>
+
+    <!-- Main -->
     <div style="height: 100%; padding: 2%; background: #1e1e1e; width: 75%; margin-left: 1%; border-radius: 20px;">
         <div class="container" style="width: 100%; height: 100%;">
+
+            <!-- Search Bar -->
             <form method="POST" action="{% url 'index' %}">
                 {% csrf_token %}
                 <div class="row justify-content-center align-items-center align-content-center"
@@ -151,21 +169,27 @@
                     </div>
                 </div>
             </form>
-
+            
+            <!-- Card Album -->
             <div class="container mt-4 no-scrollbar"
                  style="height: 80vh; overflow-y: scroll; background-color: #1e1e1e;">
                 <div class="row px-3"
                      style="display: flex; justify-content: center; align-items: center; height: 100%;">
+                    <!-- Perulangan Card Album -->
                     {% for album in albums %}
                         <div class="card mt-4 mb-4 mx-3 text-center"
                              style="width: 13rem; height: 20rem; background-color: #3e3e3e; color: #FFFFFF; border-radius: 20px; border-style: none;">
                             <form method="POST" action="{% url 'ratinginput' %}">
+
+                                <!-- Cross Site Request Forgery token untuk memverifikasi -->
                                 {% csrf_token %}
                                 <input type="hidden" name="link_album" value="{{ album.link_album }}">
                                 <div class="rating-box"
                                      style="position: absolute; display: flex; justify-content: center; align-items: center; top: 10px; right: 10px; background-color: #1e1e1e; color: white; padding: 5px 10px; border-radius: 5px; height: 50px; width: 50px; {% if album.input != -1 %} visibility: visible; {% else %} visibility: hidden; {% endif %}">{{ album.input }}</div>
                                 <div class="d-flex flex-column justify-content-center align-items-center"
                                      style="height: 100%;">
+
+                                    <!-- Percabangan untuk menampilkan thumbnail album -->
                                     {% if album.thumbnail_album|length < 1 %}
                                         <img class="card-img-top mt-4" style=" width: 90%; border-radius: 10px;"
                                              src="{% static 'myapp/assets/img/aoty_null.jpg' %}" alt="Album Thumbnail">
