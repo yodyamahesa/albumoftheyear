@@ -1,165 +1,240 @@
-from django.shortcuts import render
+# ------------------------------
+# Import library yang diperlukan
+# ------------------------------
+# Library pandas untuk data
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-import numpy as np
+# Library Django untuk render HTML
+from django.shortcuts import render
+# Library FuzzyWuzzy untuk search query
 from fuzzywuzzy import fuzz
-from sklearn.metrics.pairwise import cosine_similarity
 
-# Dataframe dataset album
+# Library scikit-learn untuk rekomendasi similarity
+
+# --------------------------------------------
+# DataFrame dataset albums.csv dan ratings.csv
+# --------------------------------------------
+# Baca csv ratings.csv dengan separator titik koma
 df_rating = pd.read_csv('myapp/dataset/ratings.csv', sep=';')
+# Baca csv albums.csv dengan separator titik koma
 df_album = pd.read_csv('myapp/dataset/albums.csv', sep=';')
+# Cleaning untuk separator data titik koma garis menjadi koma
 df_album = df_album.apply(lambda x: x.str.replace(';|', ', '))
+# Isi input rating menjadi -1 untuk rating album awal
 df_album['input'] = -1
 
-# Menyimpan data rating album user
-user_ratings = list()
 
-def search_album(df, query):
-    df['artis album'] = df['artis'] + ' - ' + df['album']
-    df['Score'] = df['artis album'].apply(lambda x: fuzz.token_sort_ratio(x, query))
-    top_results = df.sort_values(by='Score', ascending=False).head(20)  # Get top 20 results
-
-    # Return a list of tuples (album, artis, thumbnail, link_album, input)
-    results = []
-    for _, row in top_results.iterrows():
-        results.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album'], row['input']))
-
+# ----------------------------
+# Function Utama Untuk Program
+# ----------------------------
+# Function untuk mengubah DataFrame ke list dictionary
+# ----------------------------------------------------
+def convert_df_to_list(df):
+    # Variabel list kosong untuk menyimpan hasil convert
+    results = list()
+    # Looping setiap row pada DataFrame
+    for row in df.to_dict(orient='records'):
+        # Menambahkan dictionary masing-masing row ke list
+        results.append(row)
+    # Kembalikan hasil convert
     return results
 
+
+# Function untuk search query album
+# ---------------------------------
+def search_album(df, query):
+    # Buat kolom artis album untuk menyimpan gabungan artis dan album
+    df['artis_album'] = df['artis'] + ' - ' + df['album']
+    # Buat kolom fuzzy score untuk menyimpan hasil skor fuzzy search
+    df['fuzzy_score'] = df['artis_album'].apply(lambda x: fuzz.token_sort_ratio(x, query))
+    # Ambil top 20 album tercocok teratas
+    top_results = df.sort_values(by='fuzzy_score', ascending=False).head(20)
+    # Kembalikan hasil search
+    return top_results
+
+
+# Function untuk collaborative filtering
+# --------------------------------------
 def collaborative_filtering(df_ratings, df_albums, user_ratings):
-    # Create interaction matrix
-    interaction_matrix = df_ratings.pivot_table(index='user', columns='link_album', values='rating_album')
-    df_filled = interaction_matrix.fillna(0)
-
-    # Standardize ratings
-    def standardize(row):
-        return (row - row.mean()) / (row.max() - row.min())
-
-    ratings_std = df_filled.apply(standardize).fillna(0)
-
-    # Calculate item similarity
-    item_similarity = cosine_similarity(ratings_std.T)
-    item_similarity_df = pd.DataFrame(item_similarity, index=ratings_std.columns, columns=ratings_std.columns)
-
-    # Function to get similar albums
-    def get_similar_more_albums(user_ratings):
-        total_scores = pd.Series(dtype=float)
-        for album, rating in user_ratings:
-            similar_scores = item_similarity_df[album] * (rating - 50)
-            total_scores = total_scores.add(similar_scores, fill_value=0)
-        total_scores = total_scores.sort_values(ascending=False)
-        return total_scores
-
-    # Get recommendations
-    hasil_data = get_similar_more_albums(user_ratings)
-    hasil = pd.DataFrame(hasil_data, columns=['score'])
-    hasil['link_album'] = hasil_data.index
-    hasil = hasil.reset_index(drop=True)
-
-    # Merge with album details
-    df_hasil = df_albums.join(hasil.set_index("link_album"), on='link_album')
-    sorted = df_hasil.sort_values(by='score', ascending=False)
-    top_10 =sorted.head(10)
-
-    return top_10
+    pass  # Lewatkan
 
 
+# Function untuk collaborative filtering
+# --------------------------------------
+def content_based_filtering(df_albums):
+    pass  # Lewatkan
+
+
+# ----------------------------------------
+# Kode Function Utama Handler Request HTML
+# ----------------------------------------
+# Function untuk menghandle request ke halaman HomePage
+# -----------------------------------------------------
 def index(request):
-    if request.method == 'POST':
-        query = request.POST.get('Search Query')
-        if query:
-            # Perform album search based on query
-            search_results = search_album(df_album.copy(), query)
-            return render(request, "myapp/index.html", {
-                "albums": search_results  # Pass the list of tuples directly
-            })
-    else:
-        # Prepare initial album list
-        album_list = []
-        for index, row in df_album.iterrows():
-            album_list.append((row['album'], row['artis'], row['thumbnail_album'], row['link_album'], row['input']))
-        # If not POST or query is empty, display default results
+    # Jika request dalam method GET
+    # -----------------------------
+    if request.method == 'GET':
+        # Convert DataFrame album menjadi list dictionary
+        albums_list = convert_df_to_list(df_album)
+        # Render HTML
         return render(request, "myapp/index.html", {
-            "albums": album_list[:100]  # Get the first 100 albums
+            "albums": albums_list[:100]
         })
 
+    # Jika request dalam method POST
+    # ------------------------------
+    elif request.method == 'POST':
+        # Ambil key-key POST
+        query = request.POST.get('Search Query')
+        link_album = request.POST.get('link_album')
+        # Jika POST terdapat key 'Search Query'
+        # -------------------------------------
+        if query:
+            # Melakukan search album
+            search_results = search_album(df_album.copy(), query)
+            # Convert DataFrame album menjadi list dictionary
+            search_results = convert_df_to_list(search_results)
+            # Render HTML
+            return render(request, "myapp/index.html", context={
+                "albums": search_results
+            })
+        # Jika POST terdapat key 'link_album'
+        # -----------------------------------
+        elif link_album:
+            # Convert DataFrame album menjadi list dictionary
+            albums_list = convert_df_to_list(df_album)
+            # Render HTML
+            return render(request, "myapp/index.html", {
+                "albums": albums_list[:100]
+            })
+        # Jika POST tidak terdapat key apapun
+        # -----------------------------------
+        else:
+            # Convert DataFrame album menjadi list dictionary
+            albums_list = convert_df_to_list(df_album)
+            # Render HTML
+            return render(request, "myapp/index.html", {
+                "albums": albums_list[:100]
+            })
 
+    # Jika request dalam method lain
+    # ------------------------------
+    else:
+        pass  # Lewatkan
+
+
+# Function untuk menghandle request ke halaman Koleksi Saya
+# ---------------------------------------------------------
 def koleksisaya(request):
-    return render(request, 'myapp/koleksisaya.html')
+    # Jika request dalam method GET
+    # -----------------------------
+    if request.method == 'GET':
+        # Ambil album yang telah dirating / tidak bernilai -1
+        album_rated = df_album[df_album['input'] != -1]
+        # Convert DataFrame album menjadi list dictionary
+        album_rated = convert_df_to_list(album_rated)
+        # Render HTML
+        return render(request, 'myapp/koleksisaya.html', {
+            "albums": album_rated
+        })
+
+    # Jika request dalam method lain
+    # ------------------------------
+    else:
+        pass  # Lewatkan
 
 
+# Function untuk menghandle request ke halaman Input Rating
+# ---------------------------------------------------------
 def ratinginput(request):
+    # Jika request dalam method POST
+    # -----------------------------
     if request.method == 'POST':
+        # Ambil key-key POST
         link_album = request.POST.get('link_album')
         rating = request.POST.get('nilairating')
-        # Do something with the thumbnail (e.g., save it to the database or process it)
-        print(f"Received link album: {rating}")  # Example: Just print it for now
-        print(f"Received link album: {link_album}")  # Example: Just print it for now
-
-        if rating is not None:
+        # Jika POST terdapat key 'nilairating'
+        # -------------------------------------
+        if rating:
+            # Update rating album di df_album sesuai dengan input rating
             df_album.loc[df_album['link_album'] == f'{link_album}', 'input'] = int(rating)
-            filtered_rows = df_album[df_album['input'] != -1]
-            user_ratings_cf = list(zip(filtered_rows['link_album'].values, filtered_rows['input'].values))
-            filtered_rows = df_album[df_album['input'] >= 50]
-            user_ratings_cb = filtered_rows['link_album'].to_list()
-            print('collaborative filtering')
-            print(user_ratings_cf)
-            print('content based filtering')
-            print(user_ratings_cb)
+            # KODE FILTERING DIPAKE LAGI NANTI
+            # filtered_rows = df_album[df_album['input'] != -1]
+            # user_ratings_cf = list(zip(filtered_rows['link_album'].values, filtered_rows['input'].values))
+            # filtered_rows = df_album[df_album['input'] >= 50]
+            # user_ratings_cb = filtered_rows['link_album'].to_list()
+            # print('collaborative filtering')
+            # print(user_ratings_cf)
+            # print('content based filtering')
+            # print(user_ratings_cb)
 
+        # Mengambil row album sesuai dengan link_album
         clicked_df = df_album[df_album['link_album'] == link_album]
-        results = []
-        for _, row in clicked_df.iterrows():
-            results.append((row['album'], row['artis'], row['thumbnail_album'], row['label'], row['genre'],
-                            row['tanggal_rilis'], row['produser'], row['penulis'], row['thumbnail_artis'],
-                            row['link_album']))
+        # Convert DataFrame album menjadi list dictionary
+        albums_list = convert_df_to_list(clicked_df)
+
+        ratingnya = int(clicked_df['input'].iloc[0])
+
+        # Pass nilai rating 0 jika nilainya -1, jika tidak maka pass nilai rating asli
+        if ratingnya == -1:
+            ratingnya = 0
+        else:
+            pass
 
         return render(request, 'myapp/ratinginput.html', {
-            "albumdetails": results
+            "albumdetails": albums_list,
+            "ratingnya": ratingnya
         })
 
-
-def detail_album(request, album_id):
-    # Baca data dari file CSV
-    with open('albums.csv', 'r', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile, delimiter=';|')  # Gunakan ';|' sebagai pemisah
-        albumdetails = []
-        for row in reader:
-            # Ubah pemisah di kolom Label, Genre, Produser, Penulis
-            row[7] = row[7].replace(';|', ',')  # Kolom Label
-            row[8] = row[8].replace(';|', ',')  # Kolom Genre
-            row[9] = row[9].replace(';|', ',')  # Kolom Produser
-            row[10] = row[10].replace(';|', ',')  # Kolom Penulis
-            albumdetails.append(row)
-
-    # Temukan album yang sesuai dengan album_id
-    album = None
-    for row in albumdetails:
-        if row[2] == album_id:  # Asumsi kolom album_id adalah kolom ke-3 (index 2)
-            album = row
-            break
-
-    if album:
-        context = {
-            'albumdetails': [album],  # Kirim hanya data album yang sesuai
-            # ... (variabel lain yang dibutuhkan template Anda)
-        }
-        return render(request, 'ratinginput.html', context)
+    # Jika request dalam method lain
+    # ------------------------------
     else:
-        # Tampilkan pesan error jika album tidak ditemukan
-        return render(request, 'error.html', {'message': 'Album tidak ditemukan'})
+        pass  # Lewatkan
 
 
+# Function untuk menghandle request ke halaman rekomendasi
+# --------------------------------------------------------
 def rekomendasi(request):
-    return render(request, "myapp/sampah.html", {
-        "albums": album[0:100]
+    return render(request, "myapp/hasil.html", {
+        "albums": df_album[0:100]
     })
 
+# ----------------------------
+# ----------------------------
+# ----------------------------
+# Function lain yang belum fix
+# ----------------------------
+# ----------------------------
+# ----------------------------
 
-def funsampah(request):
-    return render(request, "myapp/sampah.html", {
-        "albums": album[0:100]
-    })
+# def detail_album(request, album_id):
+#     # Baca data dari file CSV
+#     with open('albums.csv', 'r', encoding='utf-8') as csvfile:
+#         reader = csv.reader(csvfile, delimiter=';|')  # Gunakan ';|' sebagai pemisah
+#         albumdetails = []
+#         for row in reader:
+#             # Ubah pemisah di kolom Label, Genre, Produser, Penulis
+#             row[7] = row[7].replace(';|', ',')  # Kolom Label
+#             row[8] = row[8].replace(';|', ',')  # Kolom Genre
+#             row[9] = row[9].replace(';|', ',')  # Kolom Produser
+#             row[10] = row[10].replace(';|', ',')  # Kolom Penulis
+#             albumdetails.append(row)
+#
+#     # Temukan album yang sesuai dengan album_id
+#     album = None
+#     for row in albumdetails:
+#         if row[2] == album_id:  # Asumsi kolom album_id adalah kolom ke-3 (index 2)
+#             album = row
+#             break
+#
+#     if album:
+#         context = {
+#             'albumdetails': [album],  # Kirim hanya data album yang sesuai
+#             # ... (variabel lain yang dibutuhkan template Anda)
+#         }
+#         return render(request, 'ratinginput.html', context)
+#     else:
+#         # Tampilkan pesan error jika album tidak ditemukan
+#         return render(request, 'error.html', {'message': 'Album tidak ditemukan'})
 
 
 def getLinkAndRating(request):
