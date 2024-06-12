@@ -100,6 +100,8 @@ def index(request):
         # Jika POST terdapat key 'link_album'
         # -----------------------------------
         elif link_album:
+            # Hapus rating album tersebut dan jadikan default -1
+            df_album.loc[df_album['link_album'] == f'{link_album}', 'input'] = -1
             # Convert DataFrame album menjadi list dictionary
             albums_list = convert_df_to_list(df_album)
             # Render HTML
