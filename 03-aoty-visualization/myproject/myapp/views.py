@@ -120,18 +120,7 @@ def ratinginput(request):
 
 
 def detail_album(request, album_id):
-    # Baca data dari file CSV
-    with open('albums.csv', 'r', encoding='utf-8') as csvfile:
-        reader = csv.reader(csvfile, delimiter=';|')  # Gunakan ';|' sebagai pemisah
-        albumdetails = []
-        for row in reader:
-            # Ubah pemisah di kolom Label, Genre, Produser, Penulis
-            row[7] = row[7].replace(';|', ',')  # Kolom Label
-            row[8] = row[8].replace(';|', ',')  # Kolom Genre
-            row[9] = row[9].replace(';|', ',')  # Kolom Produser
-            row[10] = row[10].replace(';|', ',')  # Kolom Penulis
-            albumdetails.append(row)
-
+    albumdetails = []
     # Temukan album yang sesuai dengan album_id
     album = None
     for row in albumdetails:
