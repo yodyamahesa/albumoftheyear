@@ -184,8 +184,22 @@ def ratinginput(request):
             "ratingnya": ratingnya
         })
 
-    # Jika request dalam method lain
-    # ------------------------------
+
+def detail_album(request, album_id):
+    albumdetails = []
+    # Temukan album yang sesuai dengan album_id
+    album = None
+    for row in albumdetails:
+        if row[2] == album_id:  # Asumsi kolom album_id adalah kolom ke-3 (index 2)
+            album = row
+            break
+
+    if album:
+        context = {
+            'albumdetails': [album],  # Kirim hanya data album yang sesuai
+            # ... (variabel lain yang dibutuhkan template Anda)
+        }
+        return render(request, 'ratinginput.html', context)
     else:
         pass  # Lewatkan
 
