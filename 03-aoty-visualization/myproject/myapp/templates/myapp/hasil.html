@@ -525,8 +525,8 @@
       });
     }
 
-    createPieChart("cf-album-piechart", 'myapp/dataset/cf_result.csv');
-    createPieChart("cb-album-piechart", 'myapp/dataset/cb_result.csv');
+    createPieChart("cf-album-piechart", {% static 'myapp/dataset/cf_result.csv' %});
+    createPieChart("cb-album-piechart", {% static 'myapp/dataset/cb_result.csv' %});
     
 
     
