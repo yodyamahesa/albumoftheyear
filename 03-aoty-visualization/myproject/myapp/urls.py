@@ -5,7 +5,6 @@ urlpatterns = [
     path('', views.index, name="index"),
     path('koleksisaya', views.koleksisaya, name='koleksisaya'),
     path('ratinginput', views.ratinginput, name='ratinginput'),
-    path('rekomendasi', views.rekomendasi, name="rekomendasi"),
-    path('cfresult', views.cfresult, name="cfresult"),
-    path('cbresult', views.cbresult, name="cbresult")
+    path('hasil', views.rekomendasi, name="hasil")
+    # path('get-link-and-rating/', views.getLinkAndRating, name='getLinkAndRating')
 ]
