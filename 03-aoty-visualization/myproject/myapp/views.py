@@ -1,6 +1,8 @@
 # ------------------------------
 # Import library yang diperlukan
 # ------------------------------
+# Library numpy untuk array
+import numpy as np
 # Library pandas untuk data
 import pandas as pd
 # Library Django untuk HTTTP Response
@@ -9,6 +11,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 # Library FuzzyWuzzy untuk search query
 from fuzzywuzzy import fuzz
+# Library TF-IDF
+from sklearn.feature_extraction.text import TfidfVectorizer
+# Library Cosine Similarity
+from sklearn.metrics.pairwise import cosine_similarity
 
 # Library scikit-learn untuk rekomendasi similarity
 
@@ -57,13 +63,105 @@ def search_album(df, query):
 # Function untuk collaborative filtering
 # --------------------------------------
 def collaborative_filtering(df_ratings, df_albums, user_ratings):
-    pass  # Lewatkan
+    # Create interaction matrix
+    interaction_matrix = df_ratings.pivot_table(index='user', columns='link_album', values='rating_album')
+    df_filled = interaction_matrix.fillna(0)
+
+    # Standardize ratings
+    def standardize(row):
+        return (row - row.mean()) / (row.max() - row.min())
+
+    ratings_std = df_filled.apply(standardize).fillna(0)
+
+    # Calculate item similarity
+    item_similarity = cosine_similarity(ratings_std.T)
+    item_similarity_df = pd.DataFrame(item_similarity, index=ratings_std.columns, columns=ratings_std.columns)
+
+    # Function to get similar albums
+    def get_similar_more_albums(user_ratings):
+        total_scores = pd.Series(dtype=float)
+        for album, rating in user_ratings:
+            similar_scores = item_similarity_df[album] * (rating - 50)
+            total_scores = total_scores.add(similar_scores, fill_value=0)
+        total_scores = total_scores.sort_values(ascending=False)
+        return total_scores
+
+    # Get recommendations
+    hasil_data = get_similar_more_albums(user_ratings)
+    hasil = pd.DataFrame(hasil_data, columns=['score'])
+    hasil['link_album'] = hasil_data.index
+    hasil = hasil.reset_index(drop=True)
+
+    # Merge with album details
+    df_hasil = df_albums.join(hasil.set_index("link_album"), on='link_album')
+    sorted = df_hasil.sort_values(by='score', ascending=False)
+    sorted = sorted[sorted['input'] == -1]
+    top_10 = sorted.head(10)
+
+    return top_10
 
 
 # Function untuk collaborative filtering
 # --------------------------------------
-def content_based_filtering(df_albums):
-    pass  # Lewatkan
+def content_based_filtering(df_albums, links):
+    tabel = pd.DataFrame({
+        'link_album': df_albums['link_album'],
+        'genre': df_albums['genre'],
+        'artis': df_albums['artis'],
+        'label': df_albums['label'],
+        'produser': df_albums['produser'],
+        'penulis': df_albums['penulis']
+    })
+
+    tabel = tabel.apply(lambda x: x.str.replace(' ', '_'))
+    tabel = tabel.apply(lambda x: x.str.replace('!', ''))
+    tabel = tabel.apply(lambda x: x.str.replace('-', '_'))
+    tabel = tabel.apply(lambda x: x.str.replace("'", '_'))
+    tabel = tabel.apply(lambda x: x.str.replace(',', ' '))
+
+    combined = pd.DataFrame({
+        'link_album': tabel['link_album'],
+        'corpus': tabel[['genre', 'artis', 'label', 'produser', 'penulis']].apply(lambda x: ' '.join(map(str, x)),
+                                                                                  axis=1)
+    })
+
+    combined = combined.set_index('link_album')
+    combined = combined.apply(lambda x: x.str.replace('nan', ''))
+    corpus = combined.corpus.tolist()
+
+    def tfidf_similarity(query):
+        tfidf_vectorizer = TfidfVectorizer()
+        corpus = combined['corpus'].values
+        tfidf_vectorizer.fit(corpus)
+        query_tfidf = tfidf_vectorizer.transform([query])
+        corpus_tfidf = tfidf_vectorizer.transform(corpus)
+        similarity_scores = query_tfidf.dot(corpus_tfidf.T)
+        similarity_scores_dense = similarity_scores.toarray()
+        sorted_indices = np.argsort(similarity_scores_dense)[0][::-1]
+        relevant_links = combined.index[sorted_indices].tolist()
+        tfidf_scores = similarity_scores_dense[0][sorted_indices]
+        result = pd.DataFrame({'link_album': relevant_links, 'tfidf_score': tfidf_scores}).set_index('link_album')
+        return result
+
+    def get_score(links):
+        for i in range(len(links)):
+            links[i] = links[i].replace("-", "_")
+        query = combined.loc[combined.index.isin(links)]
+        column_values = query['corpus'].astype(str)
+        combined_string = ' '.join(column_values)
+        words = combined_string.split()
+        unique_words = list(set(words))
+        query = ' '.join(unique_words)
+        result = tfidf_similarity(query)
+        result.index = result.index.str.replace('_', '-')
+        df_result = df_albums.join(result, on='link_album')
+        sorted = df_result.sort_values(by='tfidf_score', ascending=False)
+        sorted = sorted[sorted['input'] == -1]
+        top_10 = sorted.head(10)
+        return top_10
+
+    top_10 = get_score(links)
+    return top_10
 
 
 # ----------------------------------------
@@ -198,16 +296,44 @@ def rekomendasi(request):
     if request.method == 'GET':
         # Ambil album yang telah dirating / tidak bernilai -1
         album_rated = df_album[df_album['input'] != -1]
+
+        # Collaborative Filtering
+        user_cf = list(zip(album_rated['link_album'].values, album_rated['input'].values))
+        hasil_cf = collaborative_filtering(df_rating, df_album, user_cf)
+
+        # Content-Based Filtering
+        user_cb = album_rated['link_album'].to_list()
+        hasil_cb = content_based_filtering(df_album, user_cb)
+
+        # Simpan Hasil Collaborative Filtering dan Content-Based Filtering
+        save_cf = pd.DataFrame({
+            'link_album': hasil_cf['link_album'],
+            'album': hasil_cf['album'],
+            'artis': hasil_cf['artis'],
+            'score': hasil_cf['score']
+        })
+        save_cb = pd.DataFrame({
+            'link_album': hasil_cb['link_album'],
+            'album': hasil_cb['album'],
+            'artis': hasil_cb['artis'],
+            'score': hasil_cb['tfidf_score']
+        })
+
+        # Looping memberi index
+        hasil_cf['rank'] = range(1, len(hasil_cf) + 1)
+        hasil_cb['rank'] = range(1, len(hasil_cb) + 1)
+
+        save_cf.to_csv('myapp/dataset/cf_result.csv', sep=',')
+        save_cb.to_csv('myapp/dataset/cb_result.csv', sep=',')
+
         # Convert DataFrame album menjadi list dictionary
         album_rated = convert_df_to_list(album_rated)
-
-        # Buka DataFrame hasil Collaborative Filtering dan Content-Based Filtering
-        df_cf = pd.read_csv('myapp/dataset/cf_result.csv', sep=',')
-        df_cb = pd.read_csv('myapp/dataset/cb_result.csv', sep=',')
+        hasil_cf = convert_df_to_list(hasil_cf)
+        hasil_cb = convert_df_to_list(hasil_cb)
 
         # Convert DataFrame hasil rekomendasi menjadi list dictionary
-        rekomendasi_cf = convert_df_to_list(df_cf)
-        rekomendasi_cb = convert_df_to_list(df_cb)
+        rekomendasi_cf = hasil_cf
+        rekomendasi_cb = hasil_cb
 
         # Render HTML
         return render(request, 'myapp/rekomendasi.html', {

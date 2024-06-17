@@ -278,11 +278,17 @@
                 <tbody>
                 {% for album in rekomendasi_cf %}
                     <tr>
-                        <th scope="row">1</th>
+                        <th scope="row">{{ album.rank }}</th>
                         <td>
-                            <img src="https://cdn2.albumoftheyear.org/375x/album/628548-knocknarea_2257.jpg"
-                                 alt="Maruja"
-                                 style="width: 100px; height: 100px; border-radius: 1rem">
+                            {% if album.thumbnail_album|length < 1 %}
+                                <img src="{% static 'myapp/assets/img/aoty_null.jpg' %}"
+                                     alt="Album Thumbnail"
+                                     style="width: 100px; height: 100px; border-radius: 1rem">
+                            {% else %}
+                                <img src="{{ album.thumbnail_album }}"
+                                     alt="Album Thumbnail"
+                                     style="width: 100px; height: 100px; border-radius: 1rem">
+                            {% endif %}
                         </td>
                         <td style="font-size: 15px;font-family: Montserrat, sans-serif;font-weight: bold;">{{ album.album }}<br>
                             <a href="#" style="font-size: 12px;">{{ album.artis }}</a>
@@ -320,18 +326,24 @@
                 </thead>
                 <tbody>
                 {% for album in rekomendasi_cb %}
-                <tr>
-                    <th scope="row">1</th>
-                    <td>
-                        <img src="https://cdn2.albumoftheyear.org/375x/album/628548-knocknarea_2257.jpg"
-                             alt="Maruja"
-                             style="width: 100px; height: 100px; border-radius: 10px">
-                    </td>
-                    <td style="font-size: 15px;font-family: Montserrat, sans-serif;font-weight: bold;">{{ album.album }}<br>
-                        <a href="#" style="font-size: 12px;">{{ album.artis }}</a>
-                    </td>
-                    <td>{{ album.score }}</td>
-                </tr>
+                    <tr>
+                        <th scope="row">{{ album.rank }}</th>
+                        <td>
+                            {% if album.thumbnail_album|length < 1 %}
+                                <img src="{% static 'myapp/assets/img/aoty_null.jpg' %}"
+                                     alt="Album Thumbnail"
+                                     style="width: 100px; height: 100px; border-radius: 1rem">
+                            {% else %}
+                                <img src="{{ album.thumbnail_album }}"
+                                     alt="Album Thumbnail"
+                                     style="width: 100px; height: 100px; border-radius: 1rem">
+                            {% endif %}
+                        </td>
+                        <td style="font-size: 15px;font-family: Montserrat, sans-serif;font-weight: bold;">{{ album.album }}<br>
+                            <a href="#" style="font-size: 12px;">{{ album.artis }}</a>
+                        </td>
+                        <td>{{ album.tfidf_score }}</td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>
