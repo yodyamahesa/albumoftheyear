@@ -30,3 +30,22 @@ This recommendation system is expected to help users find new song albums that m
     ```
     python manage.py runserver 
     ```
+    
+# Album Recommendation System Interface
+## Exploration Page
+<img src="./assets/klin-infra.png">
+
+## Detail Album Page
+<img src="./assets/klin-infra.png">
+
+## Recommendation Page
+### Overall Statistic Section
+<img src="./assets/klin-infra.png">
+
+### Collaborative Filtering Section
+<img src="./assets/klin-infra.png">
+<img src="./assets/klin-infra.png">
+
+### Content-Based Filtering Section
+<img src="./assets/ContentBasedFiltering1.png">
+<img src="./assets/ContentBasedFiltering2.png">
