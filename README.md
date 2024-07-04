@@ -33,10 +33,10 @@ This recommendation system is expected to help users find new song albums that m
     
 # Album Recommendation System Interface
 ## Exploration Page
-<img src="./assets/pencarian.png">
+<img src="./assets/pencarian.jpg">
 
 ## Detail Album Page
-<img src="./assets/detail.png">
+<img src="./assets/detail.jpg">
 
 ## Recommendation Page
 ### Overall Statistic Section
