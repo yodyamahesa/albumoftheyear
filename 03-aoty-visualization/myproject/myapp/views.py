@@ -319,12 +319,25 @@ def rekomendasi(request):
             'score': hasil_cb['tfidf_score']
         })
 
+        # Round Score
+        save_cf['score'] = save_cf['score'].round(4)
+        save_cb['score'] = save_cb['score'].round(4)
+
+        # Round Score
+        hasil_cf['score'] = hasil_cf['score'].round(4)
+        hasil_cb['tfidf_score'] = hasil_cb['tfidf_score'].round(4)
+
         # Looping memberi index
         hasil_cf['rank'] = range(1, len(hasil_cf) + 1)
         hasil_cb['rank'] = range(1, len(hasil_cb) + 1)
 
-        save_cf.to_csv('myapp/dataset/cf_result.csv', sep=',')
-        save_cb.to_csv('myapp/dataset/cb_result.csv', sep=',')
+        save_cf['index'] = range(1, len(save_cf) + 1)
+        save_cf = save_cf.set_index('index')
+        save_cf.to_csv('myapp/dataset/cf_result.csv', sep=',', index=True)
+
+        save_cb['index'] = range(1, len(save_cb) + 1)
+        save_cb = save_cb.set_index('index')
+        save_cb.to_csv('myapp/dataset/cb_result.csv', sep=',', index=True)
 
         # Convert DataFrame album menjadi list dictionary
         album_rated = convert_df_to_list(album_rated)
