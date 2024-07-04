@@ -33,18 +33,18 @@ This recommendation system is expected to help users find new song albums that m
     
 # Album Recommendation System Interface
 ## Exploration Page
-<img src="./assets/klin-infra.png">
+<img src="./assets/pencarian.png">
 
 ## Detail Album Page
-<img src="./assets/klin-infra.png">
+<img src="./assets/detail.png">
 
 ## Recommendation Page
 ### Overall Statistic Section
-<img src="./assets/klin-infra.png">
+<img src="./assets/rekomendasiSstatistik.png">
 
 ### Collaborative Filtering Section
-<img src="./assets/klin-infra.png">
-<img src="./assets/klin-infra.png">
+<img src="./assets/CollaborativeFiltering1.png">
+<img src="./assets/CollaborativeFiltering1.png">
 
 ### Content-Based Filtering Section
 <img src="./assets/ContentBasedFiltering1.png">
