@@ -1,4 +1,4 @@
-# Recommend How To Run 
+# Song Album Recommendation System 
 
 Recommendation systems in music platforms play an important 
 role in building better relationships between users and platforms, 
@@ -11,4 +11,22 @@ Content-Based Filtering can recommend relevant song albums according to user pre
 while Collaborative Filtering can recommend relevant song albums according to other user ratings. 
 This recommendation system is expected to help users find new song albums that match their preferences.
 
-Translated with DeepL.com (free version)
+# How To Run Code
+
+- ### Steps
+  - Install requirement
+    ```
+    pip install -r requirement.txt
+    ```
+  - Change Directory
+    ```
+    cd .\03-aoty-visualization\
+    ```
+    ```
+    cd .\myproject\
+    ```
+
+  - Run server
+    ```
+    python manage.py runserver 
+    ```
